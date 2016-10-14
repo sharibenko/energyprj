@@ -1,0 +1,21 @@
+{
+  "name": "energyprj",
+  "authors": [
+    "sharibenko <shari.benko@intel.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^4.2.7"
+  },
+  "private": true
+}

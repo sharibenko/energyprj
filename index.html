@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<style>
+
+#chart {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+  
+ 
+}
+
+.shari {
+	color: #666666;
+}
+
+</style>
+<div id="chart">
+
+</div>
+<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+<script type="text/javascript">
+
+d3.json ('/data.json', function (error, data){
+d3.select ('#chart')
+
+	.selectAll('.shari')
+	.data(data)
+	.enter()
+	.append('p')
+	.text(function (d) {return d.y;})
+	.attr('class', 'shari')
+	
+
+});
+
+</script>
