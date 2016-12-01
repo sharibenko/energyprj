@@ -1,39 +1,341 @@
-<!DOCTYPE html>
+<!DOCTYPE xhtml>
+<meta charset="utf-8">
 <style>
+	
+	body {
+		margin-top: 0px;
+		margin-left: 0px;	
+		margin-right: 0px;
+		margin-bottom: 0px;
+		padding: 0;
+		font-family: 'Source Sans Pro', sans-serif;
+		width: 100%;
+		heigth: 100%;
+	
+	}
 
-#chart {
-  font: 10px sans-serif;
-  background-color: steelblue;
-  text-align: right;
-  padding: 3px;
-  margin: 1px;
-  color: white;
-  
- 
-}
+	
+	.header {
+		width: 100%;
+		background-color: #E4A049;
+		color: #ffffff;
+		margin-top: 0px;
+		margin-bottom: 5px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		padding-left: 3%;
+		border: 0px;
+		
+	}
+	
+	.secondaryheader {
+		background-color: #126997;
+		width: 100%;
+		margin-top: 0px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		padding-left: 5%;
+		box-shadow: 1px 1px 3px #000;
 
-.shari {
-	color: #666666;
-}
+	}
+	
+	.footer {
+		width: 100%;
+		background-color: #126997;
+		margin-top: 25px;
+		margin-bottom: 0;
+		padding: 25px;
+	}
+	
+	h1 {
+		font-weight: 900;
+		font-size: 50px;
+		padding: 0px;
+		margin: 0;
+		display: inline;
+		
+	}
+	
+	h2 {
+		color: #ffffff;
+		font-weight: lighter;
+		letter-spacing: 5px;
+		padding: 0;
+		margin: 0;
+		display: inline;
+		
+	}
+	
+	h3 {
+		font-weight: 400;
+		font-size: 20px;
+		color: #126997;
+		display: inline;
+		
+	}
+	
+	.logo {
+		text-shadow: 0px 1px 3px #00314f;	
+	}
+	
+	.chartsection {
+		width: 100%;
+		margin-top: 0px;
+		padding-left: 3%;
+		padding-right: 3%;
+	
+	}
+	.chartmenubar {
+		margin-left: 3%;
+		margin-right: 3%;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		padding-left: 20px;
+		margin-top: 25px;
+		background: #61B7E4;
+		color: #ffffff;
+		font-family: 'Source Sans Pro', sans-serif;
+		box-shadow: 1px 1px 3px #333333;
+	
+		
+	}
+	
+	.axis text {
+		fill: #858585;
+		font: 13px 'Source Sans Pro', sans-serif;
+
+	
+	}
+
+	.axis path,
+	.axis line {
+  		fill: none;
+  		stroke: #a7a9ac;
+		color: #a7a9ac;
+
+	}
+	
+	
+	.axis2 text {
+		fill: #858585;
+		font: 13px 'Source Sans Pro', sans-serif;
+
+	
+	}
+
+	.axis2 path,
+	.axis2 line {
+  		fill: none;
+  		stroke: #a7a9ac;
+		color: #a7a9ac;
+
+
+	}
+	
+	.line {
+		fill: none;
+		stroke-width: 7px;
+		stroke: #61B7E4;
+		opacity: 0.5;
+		
+		
+	}
+	
+	.line2 {
+		fill: none;
+		stroke-width: 1px;
+		stroke: #126997;
+		opacity: 1.0;
+	}
+	
+	.dot {
+		fill: #126997;
+		
+	}
 
 </style>
-<div id="chart">
 
-</div>
-<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
-<script type="text/javascript">
 
-d3.json ('/data.json', function (error, data){
-d3.select ('#chart')
+<body>
 
-	.selectAll('.shari')
-	.data(data)
-	.enter()
-	.append('p')
-	.text(function (d) {return d.y;})
-	.attr('class', 'shari')
+	<div class="header"><h1 class="logo" style="font-weight:900;">WENERGY</h1><h1 class="logo" style="font-weight:400;"> PREDICTION</h1></div>
+	<div class="secondaryheader"><h2 style="font-weight:600;">LOCATION:</h2><h2 style="font-weight:300;"> Hillsboro Oregon - USA</h2></div>
+	<div class="chartmenubar"><h3>Average Household Energy Consumption Prediction (Kw/hr)</h3></div>
+	<div class="chartsection">
+		<svg class="chart1"></svg>
+		<svg class="chart2"></svg>
+		
+		<div></div>
+		
+
+	</div>
+	<div class="footer"></div>
+
+</body>
+
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3-time.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,900" rel="stylesheet">
+
+
+<script>
+
+var margin = {top: 30, right: 50, bottom: 30, left: 40};
+
+var width = 960 - margin.left - margin.right;
+
+var height = 500 - margin.top - margin.bottom;
+	
+var parseDate = d3.timeParse("%m:%d:%H");
+	
+var formatTime = d3.timeFormat("%I:%S %p");
+	
+var formatDay = d3.timeFormat("%a");
+
+var x1 = d3.scaleLinear()
+    .range([0, width])
+	.nice();
+
+var x = d3.scaleTime()
+    .range([0, width]);
+	
+var y1 = d3.scaleLinear()
+    .range([height, 0])
+	.nice();
+	
+var y = d3.scaleLinear()
+    .range([height, 0])
+	.nice();
+	
+var xAxis = d3.axisTop(x);
+	
+var xAxis1 = d3.axisBottom(x)
+    .tickFormat(formatTime);
+	
+var xAxis2 = d3.axisTop(x)
+    .tickFormat(formatDay);
+	
+var yAxis1 = d3.axisLeft(y);
+	
+var yAxis = d3.axisLeft(y);
+
+var chart1 = d3.select(".chart1")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+	.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+var line1 = d3.line()
+    .x(function (d) { return x1(d.userId);})
+    .y(function (d) { return y1(d.id);});
+	
+var chart2 = d3.select(".chart2")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+	.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+var line2 = d3.line()
+    .x(function (d) { return x(d.datetime);})
+    .y(function (d) { return y(d.total_electricity_kwh);});
 	
 
+	
+d3.json("https://jsonplaceholder.typicode.com/posts", function(data) {
+	console.log(data);
+    console.log(d3.min(data, function(d) { return d.id; }));
+    console.log(d3.max(data, function(d) { return d.id; }));
+	console.log(d3.min(data, function(d) { return d.userId; }));
+    console.log(d3.max(data, function(d) { return d.userId; }));
+	
+	x.domain([0, d3.max(data, function(d) { return d.id; })]);
+    y.domain([0, d3.max(data, function(d) { return d.userId; })]);
+	
+    chart1.append("g")
+        .attr("class", "axis")
+        .call(xAxis);
+	
+    chart1.append("g")
+        .attr("class", "axis")
+        .call(yAxis1);
+		
+	chart1.append("g")
+		.data(data)
+      .append("path")
+	    .attr("class", "line")
+		.attr("data", line1);
+	
+	chart1.append("g")
+		.data(data)
+      .append("path")
+	    .attr("class", "line")
+		.attr("data", line1);
+		
+	chart1.selectAll(".dot")
+        .data(data)
+	  .enter().append("circle")
+	    .attr("class", "dot")
+        .attr("r", 5.0)
+        .attr("cx", (data, function(d) { return d.id; }))
+        .attr("cy", (data, function(d) { return d.userId; }));
+
+		
 });
 
+
+
+d3.tsv("WenergyData.txt", function (error, data) {
+	data.forEach(function(d) {
+		d.location_id = +d.location_id
+		d.datetime = parseDate(d.datetime)
+		d.total_electricity_kwh = +d.total_electricity_kwh;});
+		
+			
+	x.domain(d3.extent(data, function(d) { return d.datetime;}));
+    y.domain([0, d3.max(data, function (d) { return d.total_electricity_kwh;})+2]).nice();
+
+	
+	
+    chart2.append("g")
+        .attr("class", "axis2")
+        .call(xAxis2);
+	
+	chart2.append("g")
+        .attr("class", "axis2")
+        .call(xAxis1);
+
+    chart2.append("g")
+        .attr("class", "axis")
+        .call(yAxis);
+		
+	chart2.append("g")
+		.datum(data.filter( function(d) { return d.location_id === 726985; }))
+      .append("path")
+	    .attr("class", "line")
+		.attr("d", line2);
+	
+	chart2.append("g")
+		.datum(data.filter( function(d) { return d.location_id === 726985; }))
+      .append("path")
+	    .attr("class", "line2")
+		.attr("d", line2);
+		
+	chart2.selectAll(".dot")
+        .data(data)
+	  .enter().append("circle")
+	    .filter( function(d) { return d.location_id === 726985; })
+	    .attr("class", "dot")
+        .attr("r", 5.0)
+        .attr("cx", function (d) { return x(d.datetime); })
+        .attr("cy", function (d) { return y(d.total_electricity_kwh); });
+
+		
+});
+
+
 </script>
+
+
